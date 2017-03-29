@@ -1,0 +1,190 @@
+<template>
+	<div class="primeSong">
+		<head-top :goBack='goBack' :isTitle='isTitle'>
+			<div slot='title' class="mytitle">{{cat}}</div>
+		</head-top>
+		<ul class="songlist">
+			<li v-for='item in songlist' @click='play(item)'>
+				<div class="songImg fl">
+					<span class="playCount"><i class="iconfont icon-tools-erji-copy"></i>{{item.playCount | countConvert}}</span>
+					<img :src="item.coverImgUrl" alt="" />
+				</div>
+				<div class="info">
+					<p class="name">{{item.name}}</p>
+					<p class="creator">by {{item.creator.nickname}}</p>
+					<p class="msg">
+						<i>{{item.tags[0]}}</i> {{item.description}}
+					</p>
+				</div>
+			</li>
+		</ul>
+		<mu-infinite-scroll :loading="loading" @load="moreSong" :loadingText='loadingText' class="myInfinit" />
+	</div>
+</template>
+<script type="text/javascript">
+	import headTop from './commHeader/header.vue';
+	import {
+		getSongList
+	} from '../api/getData.js';
+	export default {
+		data: function() {
+			return {
+				goBack: true,
+				isTitle: false,
+				cat: '',
+				initloading: false,
+				offset: 0,
+				songlist: [],
+				preventRepeatReuqest: false,
+				loading: false,
+				loadingText: '正在加载..'
+			}
+		},
+		components: {
+			headTop
+		},
+		methods: {
+			async initData() {
+				this.initloading = true;
+				var res = await getSongList(this.cat, 0, 8);
+				console.log(res, 'res')
+				this.offset += 8;
+				this.songlist = res.playlists;
+				this.initloading = false;
+			},
+			async moreSong() {
+				if(this.preventRepeatReuqest) {
+					return;
+				}
+				this.preventRepeatReuqest = true;
+				this.loading = true;
+				var that = this;
+				var res = await getSongList(this.cat, this.offset, 8);
+				var songlist = res.playlists;
+				//var songlist = this.filterData(songs,this.from,this.to);
+				console.log(songlist[0])
+				this.offset += 8;
+				if(songlist.length < 8) {
+					this.loadingText = '没有了哦';
+					setTimeout(function() {
+						that.loading = false;
+					}, 800)
+					return;
+				}
+				[].push.apply(this.songlist, songlist);
+				this.preventRepeatReuqest = false;
+				this.loading = false;
+			},
+			play: function(item) {
+				this.$router.push({
+					name: 'listDetail',
+					params: {
+						id: item.id,
+						name: item.name,
+						coverImg: item.coverImgUrl,
+						creator: item.creator,
+						count: item.playCount,
+						desc: item.description,
+						type:'playlist'
+					}
+				})
+			},
+		},
+		filters: {
+			countConvert: function(val) {
+				var count = ''
+				console.log(val, '...')
+				count = (parseInt(val / 10000)) > 9 ? parseInt(val / 10000) + '万' : val;
+				return count;
+			}
+		},
+		beforeRouteEnter: function(to, from, next) {
+			next(vm => {
+				vm.cat = to.query.cat;
+				vm.initData();
+				console.log(to, '..', to.query, to.query.cat)
+			})
+		}
+	}
+</script>
+<style type="text/css" scoped>
+	img {
+		width: 100%;
+		height: 100%;
+		border-radius: 0.6rem 0 0 0.6rem;
+	}
+	
+	.mu-infinite-scroll {
+		margin-bottom: 6rem;
+	}
+	
+	.mytitle {
+		color: #fff;
+		font-size: 2.0rem;
+		margin-left: 4.5rem;
+		position: absolute;
+		top: 1.6rem;
+	}
+	
+	.songlist {
+		padding: 7rem 1.5rem 5.6rem 1.5rem;
+	}
+	
+	.songlist li {
+		box-shadow: 0px 0px 1px #ccc;
+		background: #fff;
+		margin-bottom: 1.2rem;
+		border-radius: 0.6rem;
+		height: 10rem;
+		cursor: pointer;
+	}
+	
+	.songlist .songImg {
+		width: 10rem;
+		height: 100%;
+		position: relative;
+	}
+	
+	.songlist .songImg .playCount {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		font-size: 1.2rem;
+		color: #FFFFFF;
+	}
+	
+	.songlist .info {
+		margin-left: 10.8rem;
+		overflow: hidden;
+		padding-right: 1rem;
+		height: 100%;
+	}
+	
+	.songlist .info .name {
+		margin: 0.8rem 0 1.5rem 0;
+		font-size: 1.6rem;
+	}
+	
+	.songlist .info .creator {
+		font-size: 1.2rem;
+		color: #ccc;
+		margin-bottom: 0.8rem;
+	}
+	
+	.songlist .info .msg {
+		position: relative;
+		width: 100%;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		white-space: nowrap;
+		font-size: 1.2rem;
+	}
+	
+	.songlist .info .msg i {
+		display: inline-block;
+		padding: 0.2rem 0.5rem;
+		border: 1px solid #ccc;
+		border-radius: 0.2rem;
+		text-align: center;
+	}
+</style>

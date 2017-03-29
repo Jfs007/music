@@ -1,0 +1,43 @@
+img{
+	width: 100%;
+	height: 100%;
+}
+.offsetTop {
+	padding-top: 5.5rem;
+}
+.search-list {
+	color: #ccc;
+	font-size: 1.3rem;
+	cursor: pointer;
+}
+.search-item {
+	padding: 1rem 1.3rem;
+	position: relative;
+}
+.search-item-native{
+	padding: 0.3rem 1rem;
+}
+.cutline {
+	height: 1px;
+	position: absolute;
+	width: 98%;
+	background: radial-gradient(#d3d3d3 -90%, transparent 100%);
+	bottom: 0;
+}
+
+.search-item .item {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.search-item .item .searchRow {
+	padding-bottom: 0.8rem;
+}
+
+.noWrap {
+	overflow: hidden;
+	word-break: keep-all;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 100%;
+}

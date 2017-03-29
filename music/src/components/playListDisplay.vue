@@ -1,0 +1,352 @@
+<!--这里是歌单-->
+<template>
+	<div class="ablums">
+		<div class="primeSong">
+			<div class="primeBg" :style="{background: 'url('+primeSong.coverImgUrl+')'}"></div>
+			<p class="imgArea fl"><img :src='primeSong.coverImgUrl' alt="" /></p>
+			<ul class="songMsg">
+				<li class="more">
+					<router-link to='/primeSong?cat=榜单'>
+						精品歌单 >
+					</router-link>
+				</li>
+				<li class="name">{{primeSong.name}}</li>
+				<li class="description">{{primeSong.description}}</li>
+			</ul>
+		</div>
+		<div class="listType">
+			<div class="currentType fl">全部歌曲</div>
+			<ul class="selectType">
+				<li v-for='(sl,index) in selects' @click='selectType(index)'>{{sl}}</li>
+			</ul>
+		</div>
+		<div class="songList">
+			<mu-circular-progress :size="40" v-if='initloading' class='initload' />
+
+			<ul>
+				<li v-for='item in songlist' @click='play(item)'>
+					<div class="songImg">
+						<span class="playCount"><i class="iconfont icon-tools-erji-copy"></i>{{item.playCount | countConvert}}</span>
+						<img :src="item.coverImgUrl" />
+					</div>
+					<p class="msg">{{item.name}}</p>
+				</li>
+			</ul>
+		</div>
+		<mu-infinite-scroll :loading="loading" @load="moreSong" :loadingText='loadingText' class="myInfinit" />
+
+	</div>
+</template>
+
+<script>
+	import axios from 'axios';
+	import {
+		mapMutations,
+		mapActions
+	} from 'vuex';
+	import {
+		america,
+		getAlbums,
+		getSongList
+	} from '../api/getData.js';
+	export default {
+		name: 'playListDisplay',
+		data() {
+			return {
+				msg: '这里是about',
+				songlist: [],
+				primeSong: {},
+				loading: false,
+				loadingText: '正在加载..',
+				preventRepeatReuqest: false,
+				from: 20,
+				to: 40,
+				offset: 0,
+				initloading: true,
+				selects: ['华语', '欧美', '粤语'],
+				currentType: 0,
+			}
+		},
+		mounted: function() {
+			this.initData(this.currentType)
+		},
+		beforeRouteUpdate: function(to, from, next) {
+			alert('更新了')
+			this.songlist = [];
+			this.changeData(this.currentType);
+			next()
+		},
+		components: {},
+		methods: {
+			async moreSong() {
+				if(this.preventRepeatReuqest) {
+					return;
+				}
+				var cat = this.selects[this.currentType]
+				this.preventRepeatReuqest = true;
+				this.loading = true;
+				var that = this;
+				var res = await getSongList(cat, this.offset, 8);
+				var songlist = res.playlists;
+				//var songlist = this.filterData(songs,this.from,this.to);
+				console.log(songlist[0])
+				this.offset += 8;
+				if(songlist.length < 8) {
+					this.loadingText = '没有了哦';
+					setTimeout(function() {
+						that.loading = false;
+					}, 800)
+					return;
+				}
+				[].push.apply(this.songlist, songlist);
+				this.preventRepeatReuqest = false;
+				this.loading = false;
+			},
+			async getData() {
+				var res = await axios.get('http://musicapi.duapp.com/api.php?type=topPlayList&cat=华语&offset=0&limit=8');
+				this.songlist = res.data['playlists'];
+			},
+			testData: function(currentType) {
+				this.initloading = true;
+				var cat = this.selects[currentType];
+				axios.get('http://musicapi.duapp.com/api.php?type=topPlayList&cat=华语&offset=0&limit=8')
+					.then(res => {
+						this.songlist = res.data['playlists'];
+
+					})
+					.catch(error => console.log(error));
+
+				//var res = await getSongList(cat, 0, 8);
+				//获取热们歌单
+				//reshot = await getSongList('榜单',0,1)||{};
+				//alert(typeof reshot)
+				//this.primeSong = reshot['playlists'][0];
+				// 其他
+				//console.log(res, 'res')
+				this.offset += 8;
+
+				this.initloading = false;
+			},
+			async initData(currentType) {
+				//alert('1')
+				this.initloading = true;
+				var cat = this.selects[currentType];
+				//let res = {};let reshot = {};
+				//alert('aca'+cat)
+				let res = await getSongList(cat, 0, 8);
+				//获取热们歌单
+				let reshot = await getSongList('榜单', 0, 1) || {};
+				//alert(typeof reshot)
+				this.primeSong = reshot['playlists'][0];
+				// 其他
+				console.log(res, 'res')
+				this.offset += 8;
+				this.songlist = res['playlists'];
+				this.initloading = false;
+			},
+			async changeData(currentType) {
+				this.initloading = true;
+				var cat = this.selects[currentType];
+				let res = await getSongList(cat, 0, 8);
+				this.songlist = res['playlists'];
+				this.initloading = false;
+			},
+			filterData: function(data, from, to) {
+				var newData = [];
+				newData = data.slice(from, to);
+				return newData;
+			},
+			play: function(item) {
+				this.$router.push({
+					name: 'listDetail',
+					params: {
+						id: item.id,
+						name: item.name,
+						coverImg: item.coverImgUrl,
+						creator: item.creator,
+						count: item.playCount,
+						desc: item.description,
+						type:'playlist'
+					}
+				})
+			},
+			selectType: function(id) {
+				//alert(id)
+				this.currentType = id;
+				this.$router.push({path: '/index/playListDisplay',query:{type:id}});
+				//this.initData(index);
+			},
+			...mapMutations([
+				'changeSong',
+				'addSongList'
+			]),
+			...mapActions([])
+		},
+		filters: {
+			sliceString: function(data, max) {
+				var str = '';
+				var needLength = max || 10;
+				str = data.length > needLength ? data.substring(0, needLength) + '...' : data
+				return str
+			},
+			countConvert: function(val) {
+				var count = ''
+				console.log(val, '...')
+				count = (parseInt(val / 10000)) > 9 ? parseInt(val / 10000) + '万' : val;
+				return count;
+			}
+		},
+		computed: {
+
+		},
+
+	}
+</script>
+<style type="text/css" scoped>
+	.initload {
+		left: 50%;
+		top: 2rem;
+		transform: translateX(-50%);
+	}
+	
+	.ablums {
+		padding-top: 10.1rem;
+	}
+	
+	img {
+		width: 100%;
+		height: 100%;
+		border-radius: 0.5rem;
+	}
+	
+	.primeSong {
+		padding: 2.4rem 0.6rem 1.6rem 0.6rem;
+		background-size: 100% 100%;
+		overflow: hidden;
+		position: relative;
+	}
+	
+	.primeBg {
+		position: absolute;
+		height: 15.3rem;
+		width: 100%;
+		z-index: -1;
+		left: 0;
+		top: 0;
+		background-size: cover;
+		filter: blur(3rem);
+		-webkit-filter: blur(3rem);
+	}
+	
+	.primeSong .imgArea {
+		width: 11.3rem;
+		height: 11.3rem;
+		background: gray;
+	}
+	
+	.primeSong ul {
+		margin-left: 12.6rem;
+	}
+	
+	.primeSong:after {
+		clear: both;
+	}
+	
+	.primeSong li {
+		padding-bottom: 1rem;
+		color: #fff;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		width: 100%;
+	}
+	
+	.primeSong .more {
+		font-size: 2.2rem;
+		line-height: 2.2rem;
+		padding-bottom: 2rem;
+		padding-top: 1.2rem;
+		cursor: pointer;
+	}
+	
+	.primeSong .more a {
+		color: #fff;
+	}
+	
+	.primeSong .name {
+		font-size: 1.6rem;
+	}
+	
+	.primeSong .description {
+		color: #C3C3C3;
+	}
+	
+	.listType {
+		padding: 1.7rem 1.5rem;
+		overflow: hidden;
+	}
+	
+	.listType .currentType {
+		width: 10rem;
+		text-align: center;
+		box-sizing: border-box;
+		padding: 0.8rem 1.3rem;
+		border: 1px solid #ccc;
+		border-radius: 20rem;
+		float: left;
+	}
+	
+	.listType .selectType {
+		float: right;
+		margin-top: 1.18rem;
+		cursor: pointer;
+	}
+	
+	.listType .selectType li {
+		padding: 0 1.1rem;
+		border-right: 1px solid #ccc;
+		float: left;
+		cursor: pointer;
+	}
+	
+	.songList {
+		width: 100%;
+	}
+	
+	.songList ul {
+		margin-left: -0.2rem;
+	}
+	
+	.songList ul li {
+		float: left;
+		width: 17.8rem;
+		margin-left: 0.2rem;
+		margin-bottom: 1rem;
+	}
+	
+	.songList .songImg {
+		width: 100%;
+		height: 17.75rem;
+		padding-bottom: 1rem;
+		position: relative;
+	}
+	
+	.songList .songImg .playCount {
+		position: absolute;
+		right: 0.3rem;
+		font-size: 1.2rem;
+		top: 0.3rem;
+		color: #fff;
+	}
+	
+	.songList .msg {
+		padding: 0 0.5rem;
+		font-size: 1.6rem;
+		line-height: 1.6rem;
+		height: 3.2rem;
+	}
+	
+	.mu-infinite-scroll {
+		margin-bottom: 6rem;
+	}
+</style>

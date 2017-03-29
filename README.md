@@ -7,4 +7,7 @@ async/await来作为异步写法
 --
 以下是播放器的截取的图片
 --
-![]https://github.com/Jfs007/music/tree/master/music/screenshots/1.jpg)  
+![]( https://github.com/Jfs007/music/tree/master/music/screenshots/1.jpg)  
+
+
+

@@ -4,5 +4,7 @@
 async/await来作为异步写法
 --
 该项目模仿一位大佬的项目详情可见https://github.com/javaSwing
-＃以下是播放器的截取的图片
-![](https://github.com/guodongxiaren/ImageCache/raw/master/Logo/foryou.gif)  
+--
+以下是播放器的截取的图片
+--
+![]https://github.com/Jfs007/music/tree/master/music/screenshots/1.jpg)  

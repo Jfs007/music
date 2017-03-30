@@ -5,10 +5,17 @@ import store from './store';
 import Mint from 'mint-ui';
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css';
+import VueLazyload from 'vue-lazyload';
+Vue.use(VueLazyload, {
+	preLoad: 1.3,	
+	error: 'static/default_cover.png',
+	loading:require('../static/default_cover.png') ,
+	 attempt: 1
+})
 Vue.use(Mint);
 Vue.use(MuseUI)
-/* eslint-disable no-new */
-console.log(router,'.......')
+	/* eslint-disable no-new */
+console.log(router, '.......')
 
 new Vue({
 	el: '#app',
@@ -16,12 +23,12 @@ new Vue({
 		App
 	},
 	watch: {
-			'$route': function(){
-				console.log('dddl',this.$router,this)
-			}
-		},
+		'$route': function() {
+			console.log('dddl', this.$router, this)
+		}
+	},
 	template: '<App/>',
 	router: router,
-	store:store
-	// template:App,
+	store: store
+		// template:App,
 })

@@ -19,7 +19,7 @@
 					<li v-for="item in songlist" @click='play(item)'>
 						<div class="imgDisplay">
 							<span class="playCount"><i class="iconfont icon-tools-erji-copy"></i>{{item.playCount | countConvert}}</span>
-							<img :src="item.coverImgUrl" />
+							<img v-lazy="item.coverImgUrl" lazy='loading'/>
 						</div>
 						<p class="msg">{{item.name}}</p>
 					</li>
@@ -104,7 +104,12 @@
 		width: 100%;
 		height: 100%;
 	}
-	
+	img[lazy=loading] {
+    /*your style here*/
+   		background: url(../../static/banner-item-load.png) no-repeat;
+   		background-size: contain;
+   		background-size: 100% 100%;
+  }
 	.title {
 		font-size: 1.5rem;
 		line-height: 1.6rem;

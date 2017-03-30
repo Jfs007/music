@@ -6,9 +6,9 @@
 				<span class="name">歌曲:{{song.name}}</span>
 			</div>
 			<ul class="listWrap">
-				<li>
+				<li @click='addSong'>
 					<i class="iconfont icon-bofang1"></i>
-					<span class="info" @click='addSong'>			
+					<span class="info">			
 						下一首播放</span>
 					<p class="cutline"></p>
 				</li>
@@ -43,7 +43,7 @@
 				'setShowDetail',
 				'play',
 				'pause',
-				'addSongList'
+				'addSongList',
 			]),
 			show: function(song) {
 				this.song = song
@@ -55,7 +55,7 @@
 			addSong: function() {
 				var audio = {}
 				audio.id = this.song.id; // id
-				audio.singer = this.song.ar[0].name||''; // 演唱者
+				audio.singer = this.song.ar[0].name || ''; // 演唱者
 				audio.albumPic = this.song.al.picUrl;
 				audio.name = this.song.name;
 				this.addSongList({
@@ -65,7 +65,13 @@
 				this.$emit('toast');
 				this.close();
 			}
+		},
+		watch: {
+			'$route': function(to, from) {
+				this.bottomSheet = false;
+			}
 		}
+
 	}
 </script>
 <style type="text/css" scoped>

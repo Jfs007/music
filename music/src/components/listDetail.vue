@@ -100,21 +100,21 @@
 			])
 		},
 		beforeRouteEnter: function(to, from, next) {
-			next(vm => {
-				vm.list = [];
-				vm.loading = true;
-				if(to.params.coverImg) {
+			next(vm => {		
+				if(to.params.coverImg&&vm.id!==vm.$route.params.id) {
 					// 获取songList传入的数据
 					vm.coverImgUrl = vm.$route.params.coverImg
 					vm.description = vm.$route.params.desc
 					vm.playCount = vm.$route.params.count
 					vm.creator = vm.$route.params.creator
 					vm.id = vm.$route.params.id
-					vm.tname = vm.$route.params.name,
+					vm.tname = vm.$route.params.name
 					vm.type = vm.$route.params.type
+					vm.list = [];
+					vm.loading = true;
+					vm.getlist();
 				}
-				console.log(vm.coverImgUrl)
-				vm.getlist();
+				//console.log(vm.coverImgUrl)				
 				window.onscroll = () => {
 					var opa = window.pageYOffset
 					if(opa > 15) {
@@ -149,29 +149,17 @@
 			}),
 			async getlist() {
 				var type = this.type;
-				var res = await getDataList(type,this.id);
-				var vm = this;
+				var id = this.id;
+				var res = await getDataList(type,id);
 				this.loading = false;
+				
 				if(type ==='album'){
 					this.list = res.songs;
 					this.album = res.album;
-					console.log(JSON.stringify(this.album))
 				}
 				if(type === 'playlist'){
 					this.list = res.playlist.tracks;
 				}
-				
-				
-				//				this.list.forEach(function(song, index) {
-				//					vm.addSongList({
-				//						'audio': {
-				//							id: song.id,
-				//							singer: song.ar[0].name,
-				//							albumPic: song.al.picUrl,
-				//							name: song.name
-				//						}
-				//					});
-				//				})
 			},
 			options: function(song) {
 				this.$refs.optionslist.show(song);
@@ -439,9 +427,9 @@
 	}
 	
 	.playContrl {
-		height: 5.2rem;
+		overflow: hidden;
 		box-sizing: border-box;
-		padding: 1.6rem 1.2rem;
+		padding: 1.4rem 1.2rem;
 		border-bottom: 1px solid #ccc;
 	}
 	
@@ -456,6 +444,7 @@
 		font-size: 1.7rem;
 		color: #000000;
 		font-weight: 100;
+		line-height: 100%;
 	}
 	
 	.playAll .icon {}

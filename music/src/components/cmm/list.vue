@@ -30,6 +30,9 @@
 		mapMutations,
 		mapActions
 	} from 'vuex';
+	import {
+		getStore
+	} from '../../localStore/store.js';
 	export default {
 		data: function() {
 			return {
@@ -39,6 +42,10 @@
 				playTypes:['icon-liebiaoxunhuan','icon-danquxunhuan'],
 				playTypesName:['列表循环','单曲循环']
 			}
+		},
+		mounted:function(){
+			var item = getStore('playList');
+			item.length>0&&this.replacePlayList(item);
 		},
 		computed: {
 			...mapGetters([
@@ -53,7 +60,8 @@
 				'setIndex',
 				'changeSong',
 				'removePlay',
-				'setPlayType'
+				'setPlayType',
+				'replacePlayList'
 			]),
 			...mapActions([
 				'getSong'
@@ -76,6 +84,11 @@
 			},
 			remove:function(index) {
 				this.removePlay(index)
+			}
+		},
+		watch:{
+			'$route':function(to,from){
+				this.bottomSheet = false;
 			}
 		}
 	}
@@ -115,6 +128,9 @@
 		text-overflow: ellipsis;
 		overflow: hidden;
 		padding-right: 4rem;
+	}
+	.infoLeft .songsInfo{
+		padding-top: 0.1rem;
 	}
 	.listWrap .singer{
 		font-size: 1.2rem;

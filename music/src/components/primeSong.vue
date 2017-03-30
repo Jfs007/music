@@ -4,6 +4,7 @@
 			<div slot='title' class="mytitle">{{cat}}</div>
 		</head-top>
 		<ul class="songlist">
+			<loading v-if='initloading' class='initloading'></loading>
 			<li v-for='item in songlist' @click='play(item)'>
 				<div class="songImg fl">
 					<span class="playCount"><i class="iconfont icon-tools-erji-copy"></i>{{item.playCount | countConvert}}</span>
@@ -23,6 +24,7 @@
 </template>
 <script type="text/javascript">
 	import headTop from './commHeader/header.vue';
+	import loading from './cmm/loading.vue';
 	import {
 		getSongList
 	} from '../api/getData.js';
@@ -39,9 +41,6 @@
 				loading: false,
 				loadingText: '正在加载..'
 			}
-		},
-		components: {
-			headTop
 		},
 		methods: {
 			async initData() {
@@ -90,6 +89,10 @@
 				})
 			},
 		},
+		components:{
+			headTop,
+			loading	
+		},
 		filters: {
 			countConvert: function(val) {
 				var count = ''
@@ -117,7 +120,9 @@
 	.mu-infinite-scroll {
 		margin-bottom: 6rem;
 	}
-	
+	.initloading{
+		top:9rem;
+	}
 	.mytitle {
 		color: #fff;
 		font-size: 2.0rem;
@@ -128,6 +133,7 @@
 	
 	.songlist {
 		padding: 7rem 1.5rem 5.6rem 1.5rem;
+		position: relative;
 	}
 	
 	.songlist li {

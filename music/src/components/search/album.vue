@@ -4,7 +4,7 @@
 			<loading v-if='loading'></loading>
 			<li class="search-item search-item-native" v-for='list in searchLists' @click='play(list)'>
 				<span class="item imgAlbum">			
-					<img src="../../assets/player-bar.png" :src='list.picUrl'/>
+					<img src="../../assets/player-bar.png" :src='list.picUrl' lazy='loading'/>
 				</span>
 				<span class="item name">
 					<p class="name noWrap searchRow">{{list.name}}</p>
@@ -92,6 +92,10 @@
 </script>
 <style type="text/css" scoped>
 	@import url("../../style/search.css");
+	img[lazy=loading]{
+		background: url(../../../static/default_cover.png) repeat;
+		background-size: contain;
+	}
 	.album .imgAlbum {
 		width: 8rem;
 		height: 6rem;

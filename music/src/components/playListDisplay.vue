@@ -21,15 +21,14 @@
 			</ul>
 		</div>
 		<div class="songList">
-			<mu-circular-progress :size="40" v-if='initloading' class='initload' />
-
+			<loading  v-if='initloading'></loading>
 			<ul>
 				<li v-for='item in songlist' @click='play(item)'>
 					<div class="songImg">
 						<span class="playCount"><i class="iconfont icon-tools-erji-copy"></i>{{item.playCount | countConvert}}</span>
-						<img :src="item.coverImgUrl" />
+						<img  v-lazy="item.coverImgUrl" lazy='loading'/>
 					</div>
-					<p class="msg">{{item.name}}</p>
+					<p class="msg">{{item.name | toRule}}</p>
 				</li>
 			</ul>
 		</div>
@@ -39,7 +38,7 @@
 </template>
 
 <script>
-	import axios from 'axios';
+	import loading from './cmm/loading.vue';
 	import {
 		mapMutations,
 		mapActions
@@ -56,11 +55,10 @@
 				msg: '这里是about',
 				songlist: [],
 				primeSong: {},
-				loading: false,
+				loading: false,			
 				loadingText: '正在加载..',
 				preventRepeatReuqest: false,
-				from: 20,
-				to: 40,
+				scroller:null,
 				offset: 0,
 				initloading: true,
 				selects: ['华语', '欧美', '粤语'],
@@ -68,15 +66,14 @@
 			}
 		},
 		mounted: function() {
+			this.scroller = this.$el;
 			this.initData(this.currentType)
 		},
 		beforeRouteUpdate: function(to, from, next) {
-			alert('更新了')
 			this.songlist = [];
 			this.changeData(this.currentType);
 			next()
 		},
-		components: {},
 		methods: {
 			async moreSong() {
 				if(this.preventRepeatReuqest) {
@@ -102,44 +99,15 @@
 				this.preventRepeatReuqest = false;
 				this.loading = false;
 			},
-			async getData() {
-				var res = await axios.get('http://musicapi.duapp.com/api.php?type=topPlayList&cat=华语&offset=0&limit=8');
-				this.songlist = res.data['playlists'];
-			},
-			testData: function(currentType) {
-				this.initloading = true;
-				var cat = this.selects[currentType];
-				axios.get('http://musicapi.duapp.com/api.php?type=topPlayList&cat=华语&offset=0&limit=8')
-					.then(res => {
-						this.songlist = res.data['playlists'];
-
-					})
-					.catch(error => console.log(error));
-
-				//var res = await getSongList(cat, 0, 8);
-				//获取热们歌单
-				//reshot = await getSongList('榜单',0,1)||{};
-				//alert(typeof reshot)
-				//this.primeSong = reshot['playlists'][0];
-				// 其他
-				//console.log(res, 'res')
-				this.offset += 8;
-
-				this.initloading = false;
-			},
 			async initData(currentType) {
-				//alert('1')
 				this.initloading = true;
 				var cat = this.selects[currentType];
-				//let res = {};let reshot = {};
-				//alert('aca'+cat)
 				let res = await getSongList(cat, 0, 8);
 				//获取热们歌单
 				let reshot = await getSongList('榜单', 0, 1) || {};
 				//alert(typeof reshot)
 				this.primeSong = reshot['playlists'][0];
 				// 其他
-				console.log(res, 'res')
 				this.offset += 8;
 				this.songlist = res['playlists'];
 				this.initloading = false;
@@ -194,11 +162,16 @@
 				console.log(val, '...')
 				count = (parseInt(val / 10000)) > 9 ? parseInt(val / 10000) + '万' : val;
 				return count;
+			},
+			toRule:function(data){
+				console.log(data)
+				
+				return data;
 			}
 		},
-		computed: {
-
-		},
+		components:{
+			loading
+		}
 
 	}
 </script>
@@ -214,11 +187,16 @@
 	}
 	
 	img {
+    /*your style here*/ 
 		width: 100%;
 		height: 100%;
-		border-radius: 0.5rem;
 	}
-	
+	  img[lazy=loading] {
+    /*your style here*/
+   		background: url(../../static/banner-item-load.png) no-repeat;
+   		background-size: contain;
+   		background-size: 100% 100%;
+  }
 	.primeSong {
 		padding: 2.4rem 0.6rem 1.6rem 0.6rem;
 		background-size: 100% 100%;
@@ -241,7 +219,6 @@
 	.primeSong .imgArea {
 		width: 11.3rem;
 		height: 11.3rem;
-		background: gray;
 	}
 	
 	.primeSong ul {
@@ -311,6 +288,7 @@
 	
 	.songList {
 		width: 100%;
+		position: relative;
 	}
 	
 	.songList ul {
@@ -330,7 +308,6 @@
 		padding-bottom: 1rem;
 		position: relative;
 	}
-	
 	.songList .songImg .playCount {
 		position: absolute;
 		right: 0.3rem;
@@ -341,7 +318,7 @@
 	
 	.songList .msg {
 		padding: 0 0.5rem;
-		font-size: 1.6rem;
+		font-size: 1.5rem;
 		line-height: 1.6rem;
 		height: 3.2rem;
 	}

@@ -1,7 +1,7 @@
 <template>
 	<div class="index">
 		<head-Top :headTitle='headTitle' :goBack='goBack' :isSearch='isSearch'></head-Top>
-		<mu-tabs :value="activeTab" @change="handleTabChange" class='mutabs' :lineClass="indexMuLinehigh">
+		<mu-tabs :value="activeTab" @change="handleTabChange" class='mutabs' >
 			<mu-tab value="recommend" title="热门推荐" />
 			<mu-tab value="playListDisplay" title="歌单" />
 			<mu-tab value="like" title="主题" />
@@ -25,31 +25,31 @@
 				isSearch: true,
 				activeTab: 'recommend',
 				blooen: true,
-				headTitle: '主页',
+				headTitle: '音乐 热爱你我',
 				goBack: false,
-				indexMuLinehigh: 'index_mu_linehigh'
 			}
 		},
+		mounted:function(){
+			var that = this.$route;
+			this.changeHandle(that);
+		},
 		methods: {
-			onDown: function() {
-				console.log(this.$router, 'hahah')
-				this.$router.go(-1)
-			},
 			handleTabChange: function(val) {
 				this.activeTab = val;
 				this.$router.push({
 					path: '/index/' + val
 				})
-			}
-		},
-		watch: {
-			'$route' (to, from) {
-				const path = to.path
+			},
+			changeHandle:function(that){
+				const path = that.path
 				var tmpArr = path.split('/')
 				if(tmpArr[1] === 'index') {
 					this.handleTabChange(tmpArr[2])
 				}
 			}
+		},
+		watch: {
+			'$route':'changeHandle'
 		},
 		components: {
 			headTop,
@@ -58,13 +58,6 @@
 	}
 </script>
 <style type="text/css" scoped>
-	@import url("../style/set.css");
-	.linehigh {
-		height: 10rem;
-		width: 10rem;
-		background-color: rgb(47, 54, 54);
-	}
-	
 	.mutabs {
 		width: 100%;
 		position: fixed;
@@ -78,7 +71,7 @@
 	}
 	
 	.mutabs .mu-tab-active {
-		color: rgb(47, 54, 54);
+		color: #000000;
 	}
 	
 	.tab {

@@ -9,11 +9,13 @@
 			<div class="bottomLine"></div>
 		</div>
 		<div class="pageBg">
-			<div class="wrap" :style="{'background-image':'url(' + audio.albumPic + ')'}"></div>
+			<div class="wrap" :style="{'background-image':'url(' + audio.albumPic + ')'}" 
+				lazy='loading'
+				></div>
 		</div>
 		<div class="playPage">
 			<div class="lyricWrap" @click='closeLyricWrap' v-show='lyricWrap'>
-				<ul class="wrap">
+				<ul class="lyric">
 					<li v-for=' lyc in lyric'>{{lyc.txt}}</li>
 				</ul>
 			</div>
@@ -81,7 +83,8 @@
 				isLoad:false,
 				currentType:0,
 				playTypes:['icon-liebiaoxunhuan','icon-danquxunhuan'],
-				playTypesName:['列表循环','单曲循环']
+				playTypesName:['列表循环','单曲循环'],
+				imgUrl:''
 			}
 		},
 		mounted: function() {
@@ -325,13 +328,14 @@
 		bottom: 0;
 		width: 100%;
 		height: 100%;
-		background: url(../assets/Untitled4.jpg);
 	}
-	
+	.pageBg .wrap[lazy=loading]{
+		background: darkgray;
+	}
 	.playPage {
 		position: relative;
 		padding-top: 8rem;
-		height: 44rem;
+		height: 46rem;
 		overflow: hidden;
 		box-sizing: border-box;
 	}
@@ -345,18 +349,18 @@
 		top: 0;
 	}
 	
-	.lyricWrap .wrap {
+	.lyricWrap .lyric {
 		margin-top: 1rem;
-		height: 43rem;
+		height: 46rem;
 		overflow: auto;
 		-webkit-overflow-scrolling: touch;
 	}
 	
-	.lyricWrap .wrap li {
-		font-size: 2rem;
+	.lyricWrap .lyric li {
+		font-size: 1.6rem;
 		color: #fff;
 		text-align: center;
-		padding: 1.4rem 0;
+		padding: 1.2rem 0;
 	}
 	
 	.playPage .stick {
@@ -433,7 +437,7 @@
 		background-size: contain;
 	}
 	.playPage .songOptions{
-		margin-top: 3rem;
+		margin-top: 5rem;
 		height: 5rem;
 		padding: 1rem 2rem;
 		box-sizing: border-box;

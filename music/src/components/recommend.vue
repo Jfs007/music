@@ -167,5 +167,6 @@
 		padding: 1rem 0.5rem;
 		font-size: 1.3rem;
 		line-height: 1.4rem;
+		height:4.5rem;
 	}
 </style>

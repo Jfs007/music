@@ -3,7 +3,9 @@
 	<div class="ablums">
 		<div class="primeSong">
 			<div class="primeBg" :style="{background: 'url('+primeSong.coverImgUrl+')'}"></div>
-			<p class="imgArea fl"><img :src='primeSong.coverImgUrl' alt="" /></p>
+			<p class="imgArea fl"><img v-lazy='primeSong.coverImgUrl'
+				loay='loading'
+				 /></p>
 			<ul class="songMsg">
 				<li class="more">
 					<router-link to='/primeSong?cat=榜单'>
@@ -111,6 +113,10 @@
 				this.offset += 8;
 				this.songlist = res['playlists'];
 				this.initloading = false;
+			},
+			async getData(){
+				let cat = this.select[currentType];
+				this.initloading = true;
 			},
 			async changeData(currentType) {
 				this.initloading = true;

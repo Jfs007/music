@@ -1,5 +1,8 @@
 <template>
 	<div class="header_bar">
+		<slot name="leftOption">
+			
+		</slot>
 		<span class="head_goBack" v-if='goBack' @click='$router.go(-1)'><i class="iconfont icon-fanhui"></i></span>
 		<span class="head_title" v-if='isTitle'>
 			<i class="iconfont icon-iconfontbiaozhunmoban01"></i>

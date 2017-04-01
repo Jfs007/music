@@ -3,7 +3,7 @@
 		<head-top :goBack='goBack' :isTitle='isTitle'>
 			<div slot='title' class="mytitle">{{cat}}</div>
 		</head-top>
-		<ul class="songlist" v-load-more='getData(4)'>
+		<ul class="songlist" v-load-more='getData'>
 			<loading v-if='initloading' class='initloading'></loading>
 			<li v-for='item in songlist' @click='play(item)'>
 				<div class="songImg fl">
@@ -46,6 +46,7 @@
 		},
 		methods: {
 			async getData(limit){
+				limit = limit||4;
 				if(this.preventRepeatReuqest){
 					return;
 				}
@@ -97,6 +98,8 @@
 		mixins:[loadMore],
 		beforeRouteEnter: function(to, from, next) {
 			next(vm => {
+				vm.songlist = [];
+				vm.offset = 0;
 				vm.cat = to.query.cat;
 				vm.initData();
 				console.log(to, '..', to.query, to.query.cat)
@@ -108,7 +111,6 @@
 	img {
 		width: 100%;
 		height: 100%;
-		border-radius: 0.6rem 0 0 0.6rem;
 	}
 	
 	.mu-infinite-scroll {
@@ -126,15 +128,15 @@
 	}
 	
 	.songlist {
-		padding: 7rem 1.5rem 0 1.5rem;
+		padding: 7rem 0 0 0;
 		position: relative;
+		min-height: 17rem;
 	}
 	
 	.songlist li {
 		box-shadow: 0px 0px 1px #ccc;
 		background: #fff;
 		margin-bottom: 1.2rem;
-		border-radius: 0.6rem;
 		height: 10rem;
 		cursor: pointer;
 	}
@@ -193,8 +195,7 @@
 		line-height: 2.5rem;
 		color: #008000;
 		box-sizing: content-box;
-		background: #ccc;
-		padding-bottom: 5.6rem;
+		padding-bottom: 7.6rem;
 		position: relative;
 	}
 	.loadMore .loading{

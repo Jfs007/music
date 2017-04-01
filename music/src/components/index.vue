@@ -1,6 +1,8 @@
 <template>
 	<div class="index">
-		<head-Top :headTitle='headTitle' :goBack='goBack' :isSearch='isSearch'></head-Top>
+		<head-Top :headTitle='headTitle' :goBack='goBack' :isSearch='isSearch'>
+			<span slot="leftOption" class="slideBar" @click.stop='showSlideBar'>==</span>
+		</head-Top>
 		<mu-tabs :value="activeTab" @change="handleTabChange" class='mutabs' >
 			<mu-tab value="recommend" title="热门推荐" />
 			<mu-tab value="playListDisplay" title="歌单" />
@@ -10,14 +12,15 @@
 		<keep-alive>
 			<router-view></router-view>
 		</keep-alive>
+		<slide-bar ref='slideBar'></slide-bar>
 	</div>
 </template>
 <script type="text/javascript">
+	import slideBar from './cmm/slideBar';
 	import headTop from './commHeader/header.vue';
 	import {
 		mapGetters
 	} from 'vuex';
-	const TAB_NAME = ['推荐', '排行', '歌单']
 	export default {
 		name: 'index',
 		data: function() {
@@ -46,6 +49,9 @@
 				if(tmpArr[1] === 'index') {
 					this.handleTabChange(tmpArr[2])
 				}
+			},
+			showSlideBar:function(){
+				this.$refs.slideBar.toggle(true);
 			}
 		},
 		watch: {
@@ -53,11 +59,20 @@
 		},
 		components: {
 			headTop,
-
+			slideBar
 		}
 	}
 </script>
 <style type="text/css" scoped>
+	.slideBar{
+		cursor: pointer;
+		position: absolute;	
+		left:1rem;
+		display: block;
+		color:#fff;
+		width:0.5rem;
+		margin-top: 1.0rem;
+	}
 	.mutabs {
 		width: 100%;
 		position: fixed;

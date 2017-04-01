@@ -16,10 +16,11 @@ const loadMore = {
 				var endScrollTop = 0;
 				var requestFram;
 				var loadMore = function() {
-					var all =document.documentElement.scrollTop ||document.body.scrollTop+windowHeight;
-					console.log(offsetTop,el.clientHeight,marginBottom,paddingBottom,all)
+					//var all =document.documentElement.scrollTop ||document.body.scrollTop+windowHeight;
+					//console.log(offsetTop,el.clientHeight,marginBottom,paddingBottom,all)
 					if((document.documentElement.scrollTop ||document.body.scrollTop) + windowHeight>=elHeight+offsetTop-gap){
-						console.log('...ddddddddiiiii')
+						//console.log('...ddddddddiiiii')
+						//alert('go')
 						binding.value();					
 					}
 				};
@@ -36,7 +37,6 @@ const loadMore = {
 					})
 				}
 				el.addEventListener('touchstart', function() {
-					
 					offsetTop = getOffset(el,'top')
 					elHeight = parseInt(getStyle(el,'height'));		
 					//alert(elHeight)

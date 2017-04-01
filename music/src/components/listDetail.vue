@@ -129,6 +129,7 @@
 		beforeRouteLeave: function(to, from, next) {
 			window.onscroll = null;
 			this.isaddList = false;
+			
 			next()
 		},
 		methods: {

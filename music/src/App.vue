@@ -50,7 +50,7 @@
 </script>
 <style type="text/css">
 /*测试阶段，以360px为准， 1rem = 10px*/
-	@import url("//at.alicdn.com/t/font_d4tbwzwfdz7d5cdi.css");
+	@import url("//at.alicdn.com/t/font_w2sygrotfh5gsyvi.css");
 	html{
 		padding: 0;
 		margin: 0;

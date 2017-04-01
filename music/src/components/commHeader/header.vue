@@ -55,7 +55,7 @@
 		background: rgb(69,168,120);
 		position: fixed;
 		top:0;
-		z-index: 999;
+		z-index: 90;
 	}
 	.head_goBack{
 		cursor: pointer;

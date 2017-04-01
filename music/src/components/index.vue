@@ -1,7 +1,9 @@
 <template>
 	<div class="index">
 		<head-Top :headTitle='headTitle' :goBack='goBack' :isSearch='isSearch'>
-			<span slot="leftOption" class="slideBar" @click.stop='showSlideBar'>==</span>
+			<span slot="leftOption" class="slideBar" @click.stop='showSlideBar'>
+				<i class="iconfont icon-caidan"></i>
+			</span>
 		</head-Top>
 		<mu-tabs :value="activeTab" @change="handleTabChange" class='mutabs' >
 			<mu-tab value="recommend" title="热门推荐" />
@@ -12,6 +14,9 @@
 		<keep-alive>
 			<router-view></router-view>
 		</keep-alive>
+		<div class="loadWrap" v-if=false>
+			
+		</div>
 		<slide-bar ref='slideBar'></slide-bar>
 	</div>
 </template>
@@ -44,11 +49,13 @@
 				})
 			},
 			changeHandle:function(that){
+				
 				const path = that.path
 				var tmpArr = path.split('/')
 				if(tmpArr[1] === 'index') {
 					this.handleTabChange(tmpArr[2])
 				}
+				
 			},
 			showSlideBar:function(){
 				this.$refs.slideBar.toggle(true);
@@ -71,7 +78,16 @@
 		display: block;
 		color:#fff;
 		width:0.5rem;
-		margin-top: 1.0rem;
+		margin-top: 2.0rem;
+	}
+	.loadWrap{
+		position: fixed;
+		top:0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		background: rgb(22,23,24);
+		z-index: 100;
 	}
 	.mutabs {
 		width: 100%;

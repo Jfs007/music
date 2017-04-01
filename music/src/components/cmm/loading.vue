@@ -4,12 +4,22 @@
 		<i></i>
 		<i></i>
 		<i></i>
-		<span>努力加载中..</span>
+		<span>{{loadText}}</span>
 	</div>
 </template>
 <script type="text/javascript">
 	export default {
-		
+		data:function(){
+			return {
+				
+			}
+		},
+		props:{
+			loadText:{
+				type:String,
+				default:'努力加载中..'
+			},
+		}
 	}
 </script>
 <style type="text/css" scoped>

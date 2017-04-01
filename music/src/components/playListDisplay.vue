@@ -22,8 +22,8 @@
 				<li v-for='(sl,index) in selects' @click='selectType(index)'>{{sl}}</li>
 			</ul>
 		</div>
-		<div class="songList">
-			<loading  v-if='initloading'></loading>
+		<div class="songList" v-load-more="moreSong">
+			<loading  v-if='initloading' class='initload'></loading>
 			<ul>
 				<li v-for='item in songlist' @click='play(item)'>
 					<div class="songImg">
@@ -33,14 +33,17 @@
 					<p class="msg">{{item.name | toRule}}</p>
 				</li>
 			</ul>
+			<div class="loadMore" v-if='loading'>
+				<loading v-if='loading' :loadText='loadText' class='loading'></loading>
+			</div>
 		</div>
-		<mu-infinite-scroll :loading="loading" @load="moreSong" :loadingText='loadingText' class="myInfinit" />
 
 	</div>
 </template>
 
 <script>
 	import loading from './cmm/loading.vue';
+	import { loadMore } from '../comm/loadMore.js';
 	import {
 		mapMutations,
 		mapActions
@@ -57,7 +60,8 @@
 				msg: '这里是about',
 				songlist: [],
 				primeSong: {},
-				loading: false,			
+				loading: false,	
+				loadText:'加载更多',
 				loadingText: '正在加载..',
 				preventRepeatReuqest: false,
 				scroller:null,
@@ -175,6 +179,7 @@
 				return data;
 			}
 		},
+		mixins:[loadMore],
 		components:{
 			loading
 		}
@@ -197,7 +202,7 @@
 		width: 100%;
 		height: 100%;
 	}
-	  img[lazy=loading] {
+	 img[lazy=loading] {
     /*your style here*/
    		background: url(../../static/banner-item-load.png) no-repeat;
    		background-size: contain;
@@ -295,10 +300,13 @@
 	.songList {
 		width: 100%;
 		position: relative;
+		min-height: 10rem;
+		overflow: hidden;
 	}
 	
 	.songList ul {
 		margin-left: -0.2rem;
+		overflow: hidden;
 	}
 	
 	.songList ul li {
@@ -331,5 +339,17 @@
 	
 	.mu-infinite-scroll {
 		margin-bottom: 6rem;
+	}
+	.loadMore{
+		height: 2.5rem;
+		text-align: center;
+		line-height: 2.5rem;
+		color: #008000;
+		box-sizing: content-box;
+		padding-bottom: 8.6rem;
+		position: relative;
+	}
+	.loadMore .loading{
+		top:1rem;
 	}
 </style>

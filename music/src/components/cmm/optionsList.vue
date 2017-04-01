@@ -68,7 +68,7 @@
 		},
 		watch: {
 			'$route': function(to, from) {
-				this.bottomSheet = false;
+				this.bottomSheet = false;  
 			}
 		}
 

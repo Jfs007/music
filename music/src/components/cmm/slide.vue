@@ -8,6 +8,10 @@
 	</div>
 </template>
 <script type="text/javascript">
+	import {
+		getStyle,
+		getOffset
+	} from '../../comm/commLib.js';
 	export default {
 		data: function() {
 			return {
@@ -41,25 +45,15 @@
 		//props: ['activePro', 'pro'],
 		mounted: function() {
 			//	pc端
-			var getPoint = function(obj) {
-					var l = obj.offsetLeft; //对应父容器的上边距
-					//alert(obj+l)
-					while(obj = obj.offsetParent) {
-						l += obj.offsetLeft;
-					}
-					//alert(l+'ak2dd32')
-					//	console.log(l,'..lgetPoint')
-					return parseInt(l)
-				},
+			var 
 				maxWidth = 0,
 				clientX = 0,
 				dragBot = this.$el.getElementsByClassName('dragBot')[0],
 				sliderPad = this.$el.getElementsByClassName('sliderPad')[0],
-				clientX = getPoint(sliderPad),
+				clientX = getOffset(sliderPad,'left'),
 				that = this;
 			//alert(typeof clientX,'...')
-			maxWidth = sliderPad.currentStyle ?
-				sliderPad.currentStyle['width'] : getComputedStyle(sliderPad, false)['width'];
+			maxWidth = getStyle(sliderPad);
 			this.max = parseInt(maxWidth);
 
 			sliderPad.addEventListener('touchstart', function(e) {

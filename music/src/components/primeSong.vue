@@ -3,7 +3,7 @@
 		<head-top :goBack='goBack' :isTitle='isTitle'>
 			<div slot='title' class="mytitle">{{cat}}</div>
 		</head-top>
-		<ul class="songlist">
+		<ul class="songlist" v-load-more='getData(4)'>
 			<loading v-if='initloading' class='initloading'></loading>
 			<li v-for='item in songlist' @click='play(item)'>
 				<div class="songImg fl">
@@ -19,18 +19,20 @@
 				</div>
 			</li>
 		</ul>
-		<mu-infinite-scroll :loading="loading" @load="moreSong" :loadingText='loadingText' class="myInfinit" />
+		<div class="loadMore" v-if='loading'><loading v-if='loading' :loadText='loadText' class='loading'></loading></div>
 	</div>
 </template>
 <script type="text/javascript">
 	import headTop from './commHeader/header.vue';
 	import loading from './cmm/loading.vue';
+	import { loadMore } from '../comm/loadMore.js';
 	import {
 		getSongList
 	} from '../api/getData.js';
 	export default {
 		data: function() {
 			return {
+				loadText:'加载更多..',
 				goBack: true,
 				isTitle: false,
 				cat: '',
@@ -43,36 +45,27 @@
 			}
 		},
 		methods: {
-			async initData() {
-				this.initloading = true;
-				var res = await getSongList(this.cat, 0, 8);
-				console.log(res, 'res')
-				this.offset += 8;
-				this.songlist = res.playlists;
-				this.initloading = false;
-			},
-			async moreSong() {
-				if(this.preventRepeatReuqest) {
+			async getData(limit){
+				if(this.preventRepeatReuqest){
 					return;
 				}
+				this.offset>0&&(this.loading = true);
 				this.preventRepeatReuqest = true;
-				this.loading = true;
-				var that = this;
-				var res = await getSongList(this.cat, this.offset, 8);
-				var songlist = res.playlists;
-				//var songlist = this.filterData(songs,this.from,this.to);
-				console.log(songlist[0])
-				this.offset += 8;
-				if(songlist.length < 8) {
-					this.loadingText = '没有了哦';
-					setTimeout(function() {
-						that.loading = false;
-					}, 800)
-					return;
+				var res = await getSongList(this.cat,this.offset,limit);
+				var songlist = res.playlists;			
+				this.offset += limit;
+				if(songlist.length<4){
+					// 数据没了时候处理的事情...
 				}
+				// 加入进去
 				[].push.apply(this.songlist, songlist);
 				this.preventRepeatReuqest = false;
 				this.loading = false;
+			},
+			async initData(){
+				this.initloading = true;
+				await this.getData(8);
+				this.initloading = false;
 			},
 			play: function(item) {
 				this.$router.push({
@@ -101,6 +94,7 @@
 				return count;
 			}
 		},
+		mixins:[loadMore],
 		beforeRouteEnter: function(to, from, next) {
 			next(vm => {
 				vm.cat = to.query.cat;
@@ -132,7 +126,7 @@
 	}
 	
 	.songlist {
-		padding: 7rem 1.5rem 5.6rem 1.5rem;
+		padding: 7rem 1.5rem 0 1.5rem;
 		position: relative;
 	}
 	
@@ -192,5 +186,18 @@
 		border: 1px solid #ccc;
 		border-radius: 0.2rem;
 		text-align: center;
+	}
+	.loadMore{
+		height: 2.5rem;
+		text-align: center;
+		line-height: 2.5rem;
+		color: #008000;
+		box-sizing: content-box;
+		background: #ccc;
+		padding-bottom: 5.6rem;
+		position: relative;
+	}
+	.loadMore .loading{
+		top:1rem;
 	}
 </style>

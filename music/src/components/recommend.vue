@@ -2,10 +2,10 @@
 	<div class="recommend">
 		<div id="slider">
 			<swiper :options="swiperOption">
-				<swiper-slide><img src="/static/banner1.jpg" class="banner-item" alt=""></swiper-slide>
-				<swiper-slide><img src="/static/banner2.jpg" class="banner-item" alt=""></swiper-slide>
-				<swiper-slide><img src="/static/banner3.jpg" class="banner-item" alt=""></swiper-slide>
-				<swiper-slide><img src="/static/banner4.jpg" class="banner-item" alt=""></swiper-slide>
+				<swiper-slide><img src="../comm/img/banner1.jpg" class="banner-item" alt=""></swiper-slide>
+				<swiper-slide><img src="../comm/img/banner2.jpg" class="banner-item" alt=""></swiper-slide>
+				<swiper-slide><img src="../comm/img/banner3.jpg" class="banner-item" alt=""></swiper-slide>
+				<swiper-slide><img src="../comm/img/banner4.jpg" class="banner-item" alt=""></swiper-slide>
 				<div class="swiper-pagination" slot="pagination"></div>
 			</swiper>
 		</div>

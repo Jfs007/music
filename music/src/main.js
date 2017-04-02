@@ -8,8 +8,8 @@ import 'muse-ui/dist/muse-ui.css';
 import VueLazyload from 'vue-lazyload';
 Vue.use(VueLazyload, {
 	preLoad: 1.3,	
-	error: 'static/default_cover.png',
-	loading:require('../static/default_cover.png') ,
+	error: './comm/img/default_cover.png',
+	loading:require('./comm/img/default_cover.png') ,
 	 attempt: 1
 })
 Vue.use(Mint);

@@ -204,7 +204,7 @@
 	}
 	 img[lazy=loading] {
     /*your style here*/
-   		background: url(../../static/banner-item-load.png) no-repeat;
+   		background: url(../comm/img/banner-item-load.png) no-repeat;
    		background-size: contain;
    		background-size: 100% 100%;
   }

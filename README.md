@@ -1,8 +1,9 @@
 使用vue编写的音乐播放项目
 ====
-＃demo链接
-＃https://jfs007.github.io/musicDemo/
-
+demo链接 https://jfs007.github.io/musicDemo/
+----
+请自己调节合适的屏幕大小，最好在手机上观看
+---
 该项目使用到了vue全家桶的vue-router , vuex ,数据获取部分来自网易云音乐的接口，这里没有使用axios，而是使用了自己封装的fecth对象，并用xhr来做兼容
 async/await来作为异步写法
 --
